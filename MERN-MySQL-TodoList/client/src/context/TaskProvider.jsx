@@ -3,12 +3,14 @@ import {
   getTasksRequest,
   deleteTaskRequest,
   createTaskRequest,
+  getTaskRequest,
+  updateTaskRequest,
 } from "../api/tasks.api";
 import { TaskContext } from "./TaskContext";
 
 export const useTasks = () => {
   const context = useContext(TaskContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useTasks must be used within a TaskContextProvider");
   }
   return context;
@@ -39,8 +41,27 @@ export const TaskContextProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  const getTask = async (id) => {
+    try {
+      const response = await getTaskRequest(id);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateTask = async (id, newFields) => {
+    try {
+      const response = await updateTaskRequest(id, newFields);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <TaskContext.Provider value={{ tasks, loadTasks, deleteTask, createTask }}>
+    <TaskContext.Provider value={{ tasks, loadTasks, deleteTask, createTask, getTask, updateTask }}>
       {children}
     </TaskContext.Provider>
   );
